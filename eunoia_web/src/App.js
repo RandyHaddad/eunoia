@@ -9,6 +9,7 @@ import RegisterCharityPage from './pages/RegisterCharityPage';
 import AboutPage from './pages/AboutPage';
 import ManagementPage from './pages/ManagementPage';
 import TransparencyPage from './pages/TransparencyPage';
+import ManualPage from './pages/ManualPage';
 import { AppProvider } from './components/AppProvider';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -96,15 +97,16 @@ function App() {
               <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
                 <Navbar />
                 <main style={{ flex: 1 }}>
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/donate" element={<DonatePage />} />
-                    <Route path="/charities" element={<CharitiesPage />} />
-                    <Route path="/register-charity" element={<RegisterCharityPage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/management" element={<ManagementPage />} />
-                    <Route path="/transparency" element={<TransparencyPage />} />
-                  </Routes>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/donate" element={<DonatePage />} />
+                      <Route path="/charities" element={<CharitiesPage />} />
+                      <Route path="/register-charity" element={<RegisterCharityPage />} />
+                      <Route path="/about" element={<AboutPage />} />
+                      <Route path="/management" element={<ManagementPage />} />
+                      <Route path="/transparency" element={<TransparencyPage />} />
+                      <Route path="/manual" element={<ManualPage />} />
+                    </Routes>
                 </main>
                 <Footer />
               </div>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, IconButton as MuiIconButton, Typography, Paper } from '@mui/material';
-import { styled, keyframes, alpha } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'; // Or FavoriteIcon for a filled heart
+import CheckIcon from '@mui/icons-material/Check';
+import AttributeRings from './AttributeRings';
 
 // --- Styled Components --- //
 
@@ -60,12 +61,16 @@ const CardUI = styled(Paper)(({ theme, imageUrl, zIndexOffset = 0 }) => ({
 //   borderBottomRightRadius: '20px',
 // });
 
-const ActionButtonsContainer = styled(Box)({
+const OverlayButtonsUI = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  bottom: theme.spacing(2),
+  left: 0,
+  width: '100%',
   display: 'flex',
-  justifyContent: 'center',
-  gap: '20px',
-  marginTop: '20px',
-});
+  justifyContent: 'space-between',
+  padding: `0 ${theme.spacing(2)}`,
+  pointerEvents: 'none',
+}));
 
 const ActionButtonUI = styled(MuiIconButton)(({ theme, colorvariant }) => ({
   width: '60px',
@@ -77,7 +82,18 @@ const ActionButtonUI = styled(MuiIconButton)(({ theme, colorvariant }) => ({
     transform: 'scale(1.1)',
     backgroundColor: 'white',
   },
+  pointerEvents: 'auto',
   // MUI Icons have their own sizing, adjust if needed via fontSize prop on the icon itself
+}));
+
+const AttributeRingsContainer = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: theme.spacing(2),
+  left: 0,
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  pointerEvents: 'none',
 }));
 
 const EmptyStateUI = styled(Box)(({ theme }) => ({
@@ -164,7 +180,7 @@ const SwipeableImageCards = ({ imagesData, onSwipe }) => {
   if (showEmptyState) {
     return (
       <EmptyStateUI>
-        <FavoriteBorderIcon className="empty-state-icon" /> {/* Or CheckCircleOutlineIcon */}
+        <CheckIcon className="empty-state-icon" />
         <Typography variant="h6" component="h3" fontWeight="semibold" gutterBottom>
           All Set!
         </Typography>
@@ -183,32 +199,38 @@ const SwipeableImageCards = ({ imagesData, onSwipe }) => {
       <CardContainerUI>
         {currentCardsData.map((cardData, index) => (
           <CardUI
-            key={cardData.id} // Key should be stable and unique
-            ref={cardElementsRef.current[cardData.id]} // Assign ref using card ID
-            imageUrl={cardData.imgSrc} 
-            zIndexOffset={index} // For stacking effect (topmost card has index 0)
-            // Drag handlers will be added in a future step
-          >
-            {/* CardContentUI removed to not show text on images */}
-          </CardUI>
+            key={cardData.id}
+            ref={cardElementsRef.current[cardData.id]}
+            imageUrl={cardData.imgSrc}
+            zIndexOffset={index}
+          />
         ))}
+        {topCard && (
+          <>
+            {topCard.attributes && (
+              <AttributeRingsContainer>
+                <AttributeRings attributes={topCard.attributes} />
+              </AttributeRingsContainer>
+            )}
+            <OverlayButtonsUI>
+              <ActionButtonUI
+                colorvariant="dislike"
+                onClick={() => topCard && handleSwipe('left', topCard.id)}
+                disabled={isAnimating || !topCard}
+              >
+                <CloseIcon fontSize="large" />
+              </ActionButtonUI>
+              <ActionButtonUI
+                colorvariant="like"
+                onClick={() => topCard && handleSwipe('right', topCard.id)}
+                disabled={isAnimating || !topCard}
+              >
+                <CheckIcon fontSize="large" />
+              </ActionButtonUI>
+            </OverlayButtonsUI>
+          </>
+        )}
       </CardContainerUI>
-      <ActionButtonsContainer>
-        <ActionButtonUI 
-          colorvariant="dislike" 
-          onClick={() => topCard && handleSwipe('left', topCard.id)}
-          disabled={isAnimating || !topCard}
-        >
-          <CloseIcon fontSize="large" />
-        </ActionButtonUI>
-        <ActionButtonUI 
-          colorvariant="like" 
-          onClick={() => topCard && handleSwipe('right', topCard.id)}
-          disabled={isAnimating || !topCard}
-        >
-          <FavoriteBorderIcon fontSize="large" />
-        </ActionButtonUI>
-      </ActionButtonsContainer>
     </Box>
   );
 };
